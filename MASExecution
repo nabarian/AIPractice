@@ -1,0 +1,24 @@
+# ==========================================
+# EKSEKUSI MULTI-AGENT SYSTEM
+# ==========================================
+
+# 1. Inisialisasi Agen beserta "Local View" (Data Lokal) mereka
+# Perhatikan: Tidak ada agen yang tahu jadwal agen lain secara langsung!
+agen_dosen = AgenPenjadwalan(
+    nama="Agen Dosen", 
+    jadwal_kosong=["Senin 10:00", "Selasa 13:00", "Kamis 09:00"]
+)
+
+agen_mahasiswa = AgenPenjadwalan(
+    nama="Agen Mahasiswa", 
+    jadwal_kosong=["Rabu 10:00", "Senin 15:00", "Kamis 09:00", "Jumat 13:00"]
+)
+
+# 2. Agen Dosen secara otonom memulai komunikasi ke Agen Mahasiswa
+agen_dosen.ajukan_negosiasi(agen_mahasiswa)
+
+# 3. Validasi Akhir Sistem
+if agen_dosen.kesepakatan:
+    print(f"\n✅ HASIL SISTEM: Bimbingan dijadwalkan pada {agen_dosen.kesepakatan}")
+else:
+    print("\n❌ HASIL SISTEM: Gagal mencapai kesepakatan jadwal (Deadlock).")
