@@ -1,0 +1,40 @@
+# ==========================================
+# BLUEPRINT AGEN OTONOM
+# ==========================================
+class AgenPenjadwalan:
+    def __init__(self, nama, jadwal_kosong):
+        self.nama = nama
+        self.jadwal_kosong = jadwal_kosong
+        self.kesepakatan = None  # Tempat menyimpan hasil akhir
+
+    def ajukan_negosiasi(self, agen_target):
+        print(f"\n🚀 [{self.nama}] Memulai negosiasi dengan [{agen_target.nama}]...")
+        # Agen mengecek jadwalnya satu per satu dan menawarkannya
+        for jadwal in self.jadwal_kosong:
+            if self.kesepakatan is None:
+                print(f"[{self.nama}] Mengirim pesan: PROPOSE (Tawaran) jadwal {jadwal}")
+                # Mengirim pesan ke agen target
+                agen_target.terima_pesan("PROPOSE", jadwal, self)
+
+    def terima_pesan(self, jenis_pesan, isi_pesan, pengirim):
+        # 1. Jika menerima tawaran (PROPOSE)
+        if jenis_pesan == "PROPOSE":
+            print(f"   -> [{self.nama}] Menerima tawaran {isi_pesan} dari [{pengirim.nama}]")
+            
+            # Mengecek apakah jadwal tawaran ada di daftar jadwal kosong miliknya
+            if isi_pesan in self.jadwal_kosong:
+                print(f"   -> [{self.nama}] Jadwal cocok! Mengirim: ACCEPT ✅")
+                self.kesepakatan = isi_pesan
+                pengirim.terima_pesan("ACCEPT", isi_pesan, self)
+            else:
+                print(f"   -> [{self.nama}] Jadwal bentrok. Mengirim: REJECT ❌")
+                pengirim.terima_pesan("REJECT", isi_pesan, self)
+
+        # 2. Jika tawarannya diterima (ACCEPT)
+        elif jenis_pesan == "ACCEPT":
+            print(f"🎉 [{self.nama}] Negosiasi Selesai! Sepakat di jadwal: {isi_pesan}")
+            self.kesepakatan = isi_pesan
+
+        # 3. Jika tawarannya ditolak (REJECT)
+        elif jenis_pesan == "REJECT":
+            print(f"⚠️ [{self.nama}] Tawaran {isi_pesan} ditolak. Mencari jadwal lain...")
